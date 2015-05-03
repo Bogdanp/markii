@@ -24,7 +24,7 @@ app.run()
 
 ## Screenshot
 
-![Screenshot][/example/screenshot.png]
+![Screenshot](/example/screenshot.png)
 
 ## Warning
 
