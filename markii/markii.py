@@ -3,7 +3,13 @@ import inspect
 import os
 import sys
 
+from collections import OrderedDict
 from dominate.tags import *
+
+try:
+    import resource
+except ImportError:
+    resource = None
 
 
 def rel(*xs):
@@ -12,6 +18,16 @@ def rel(*xs):
 
 def static(filename):
     return open(rel("static", filename)).read()
+
+
+def getrusage():
+    if resource is None:
+        return None
+
+    try:
+        return resource.getrusage(resource.RUSAGE_SELF)
+    except:
+        return None
 
 
 def deindent(source):
@@ -50,7 +66,7 @@ def dict_to_table(d, *args, **kwargs):
     return t
 
 
-def build_response(request, frames, exception):
+def build_response(request, frames, exception, process):
     title = "Error!"
     message = str(exception)
     if message:
@@ -108,6 +124,12 @@ def build_response(request, frames, exception):
                             with dict_to_table(request):
                                 pass
 
+                        if process is not None:
+                            with div(cls="section"):
+                                h4("Process")
+                                with dict_to_table(process):
+                                    pass
+
     template = str(template)
     template = template.replace("</head>", """
         <style>{css}</style>
@@ -133,4 +155,13 @@ def markii(request, exception):
 
         frames.append((func, locals_, instance_locals, filename, source, line, lines))
 
-    return build_response(request, frames, exception)
+    rusage = getrusage()
+    process = None
+    if rusage is not None:
+        process = OrderedDict((
+            ("utime", str(rusage.ru_utime)),
+            ("stime", str(rusage.ru_stime)),
+            ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
+        ))
+
+    return build_response(request, frames, exception, process)
