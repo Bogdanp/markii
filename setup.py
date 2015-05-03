@@ -5,11 +5,11 @@ with open("README.md") as f:
 
 setup(
     name="markii",
-    version="0.1.1",
+    version="0.2.0",
     description="MarkII is an improved development-mode error handler for Python web applications.",
     long_description=long_description,
     packages=["markii", "markii.frameworks"],
-    install_requires=["dominate"],
+    install_requires=["jinja2"],
     include_package_data=True,
     author="Bogdan Popa",
     author_email="popa.bogdanp@gmail.com",

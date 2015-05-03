@@ -1,10 +1,9 @@
-import dominate
 import inspect
 import os
 import sys
 
 from collections import OrderedDict
-from dominate.tags import *
+from jinja2 import Environment, FileSystemLoader
 
 try:
     import resource
@@ -18,6 +17,12 @@ def rel(*xs):
 
 def static(filename):
     return open(rel("static", filename)).read()
+
+STYLE = static("markii.css")
+SCRIPT = static("markii.js")
+JINJA_LOADER = FileSystemLoader(rel("static"))
+JINJA = Environment(loader=JINJA_LOADER)
+TEMPLATE = JINJA.get_template("template.html")
 
 
 def getrusage():
@@ -46,122 +51,71 @@ def getsource(ob):
         return None
 
 
-def dict_to_table(d, *args, **kwargs):
-    t = table(*args, **kwargs)
-    for name, value in d.items():
-        if name is None:
-            continue
-
-        row = tr()
-        row.add(td(strong(pre(name))))
-
-        if value and isinstance(value, basestring):
-            row.add(td(pre(value)))
-        elif value and hasattr(value, "items") and inspect.ismethod(value.items):
-            row.add(td(dict_to_table(value, *args, **kwargs)))
-        else:
-            row.add(td(pre(repr(value))))
-
-        t.add(row)
-    return t
+def dict_to_kv(d):
+    return {k: repr(v) for k, v in d.iteritems()}
 
 
 def build_response(request, frames, exception, process):
-    title = "Error!"
+    error = exception.__class__.__name__
     message = str(exception)
-    if message:
-        title = "Error: {}".format(message)
 
-    template = dominate.document(title=title)
-    with template.head:
-        script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js")
-
-    with template:
-        with div(id="body"):
-            with div(id="exception"):
-                h5(str(exception.__class__.__name__))
-                h2(str(exception))
-
-            with div(id="lhs"):
-                with ul(id="frames"):
-                    for i, (func, _, _, filename, _, line, _) in enumerate(frames):
-                        with li(cls="func", data_frame=i):
-                            h4("{}()".format(func))
-                            with h6():
-                                span("in {}, line ".format(filename))
-                                strong(line)
-
-            with div(id="rhs"):
-                for i, (func, locals_, instance_locals, filename, source, line, lines) in enumerate(frames):
-                    with div(cls="frame", data_frame=i):
-                        if source is not None:
-                            lines = [line.strip() for line in lines]
-                            with div(cls="section"):
-                                h4("Source")
-                                with div(cls="source"):
-                                    for line in source.strip().split("\n"):
-                                        if not line:
-                                            br()
-
-                                        if line.strip() in lines:
-                                            pre(strong(line))
-                                        else:
-                                            pre(line)
-
-                        with div(cls="section"):
-                            h4("Locals")
-                            with dict_to_table(locals_):
-                                pass
-
-                        if instance_locals:
-                            with div(cls="section"):
-                                h4("Instance")
-                                with dict_to_table(instance_locals):
-                                    pass
-
-                        with div(cls="section"):
-                            h4("Request")
-                            with dict_to_table(request):
-                                pass
-
-                        if process is not None:
-                            with div(cls="section"):
-                                h4("Process")
-                                with dict_to_table(process):
-                                    pass
-
-    template = str(template)
-    template = template.replace("</head>", """
-        <style>{css}</style>
-        <script>{js}</script>
-    </head>""".format(
-        css=static("markii.css"),
-        js=static("markii.js")
-    ))
-    return template
+    return TEMPLATE.render(
+        style=STYLE,
+        script=SCRIPT,
+        error=error,
+        message=message,
+        frames=frames,
+        request=request,
+        process=process,
+        hasattr=hasattr,
+        ismethod=inspect.ismethod
+    )
 
 
 def markii(request, exception):
     _, __, traceback = sys.exc_info()
-    items = list(reversed(inspect.getinnerframes(traceback)))
+    items = inspect.getinnerframes(traceback)
     frames = []
-    for item in items:
-        frame, filename, line, func, lines, index = item
-        source = getsource(frame)
-        locals_ = frame.f_locals
-        instance_locals = None
-        if "self" in locals_:
-            instance_locals = vars(locals_["self"])
+    try:
+        for item in items:
+            frame, filename, line, func, lines, index = item
+            f_locals = frame.f_locals
+            try:
+                lines = [l.strip() for l in lines]
+                source = getsource(frame).strip().split("\n")
+                source = [(l.strip() in lines, l) for l in source]
+                func_locals = dict_to_kv(frame.f_locals)
+                instance_locals = None
+                if "self" in func_locals:
+                    instance = f_locals.get("self")
+                    instance_vars = vars(instance)
+                    try:
+                        instance_locals = dict_to_kv(instance_vars)
+                    finally:
+                        del instance_vars
+                        del instance
 
-        frames.append((func, locals_, instance_locals, filename, source, line, lines))
+                frames.append((
+                    func, func_locals, instance_locals,
+                    filename, source, line, lines
+                ))
+            finally:
+                del f_locals
+                del frame
+                del item
 
-    rusage = getrusage()
-    process = None
-    if rusage is not None:
-        process = OrderedDict((
-            ("utime", str(rusage.ru_utime)),
-            ("stime", str(rusage.ru_stime)),
-            ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
-        ))
+        frames = frames[::-1]
+        rusage = getrusage()
+        process = None
+        if rusage is not None:
+            process = OrderedDict((
+                ("utime", str(rusage.ru_utime)),
+                ("stime", str(rusage.ru_stime)),
+                ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
+            ))
 
-    return build_response(request, frames, exception, process)
+        return build_response(request, frames, exception, process)
+    finally:
+        del frames
+        del items
+        del traceback

@@ -1,0 +1,93 @@
+{% macro dict_to_table(d) %}
+    <table>
+        {% for name, value in d.iteritems() %}
+            {% if name %}
+                <tr>
+                    <td><strong><pre>{{ name }}</pre></strong></td>
+                    {% if value and hasattr(value, "iteritems") and ismethod(value.iteritems) %}
+                        <td>{{ dict_to_table(value) }}</td>
+                    {% else %}
+                        <td><pre>{{ value|e }}</pre></td>
+                    {% endif %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endmacro %}
+
+<!doctype html>
+<html lang="en-US">
+<head>
+    <title>Error: {{ message }}</title>
+    <style>{{ style|safe }}</style>
+</head>
+<body>
+    <div id="body">
+        <div id="exception">
+            <h5>{{ error }}</h5>
+            <h2>{{ message }}</h2>
+        </div>
+
+        <div id="lhs">
+            <ul id="frames">
+                {% for func, _, _, filename, _, line, _ in frames %}
+                    <li class="func" data-frame="{{ loop.index }}">
+                        <h4>{{ func }}()</h4>
+                        <h6>in {{ filename }}, line <strong>{{ line }}</strong></h6>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="rhs">
+            {% for func, func_locals, instance_locals, filename, source, line, lines in frames %}
+                <div class="frame" data-frame="{{ loop.index }}">
+                    {% if source %}
+                        <div class="section">
+                            <h4>Source</h4>
+                            <div class="source">
+                                {% for relevant, line in source %}
+                                    {% if relevant %}
+                                        <pre><strong>{{ line }}</pre></strong>
+                                    {% elif line %}
+                                        <pre>{{ line }}</pre>
+                                    {% else %}
+                                        <br/>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="section">
+                        <h4>Locals</h4>
+                        {{ dict_to_table(func_locals) }}
+                    </div>
+
+                    {% if instance_locals %}
+                        <div class="section">
+                            <h4>Instance</h4>
+                            {{ dict_to_table(instance_locals) }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="section">
+                <h4>Request</h4>
+                {{ dict_to_table(request) }}
+            </div>
+
+            {% if process %}
+                <div class="section">
+                    <h4>Process</h4>
+                    {{ dict_to_table(process) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>{{ script|safe }}</script>
+</body>
+</html>
