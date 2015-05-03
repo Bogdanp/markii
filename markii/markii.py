@@ -5,8 +5,6 @@ import sys
 
 from dominate.tags import *
 
-from .appengine import fix_appengine
-
 
 def rel(*xs):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *xs)
@@ -122,7 +120,6 @@ def build_response(request, frames, exception):
 
 
 def markii(request, exception):
-    fix_appengine()
     _, __, traceback = sys.exc_info()
     items = list(reversed(inspect.getinnerframes(traceback)))
     frames = []
