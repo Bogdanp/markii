@@ -66,6 +66,8 @@ ul#frames li h4 {
 }
 
 ul#frames li h6 {
+    word-break: break-all;
+    word-wrap: normal;
     font-weight: normal;
     color: #999;
 }
@@ -89,6 +91,7 @@ div#rhs div.section div.source {
     border-right: 1px solid #DDD;
     border-bottom: 1px solid #DDD;
     padding: 1em;
+    overflow: scroll;
 }
 
 div#rhs div.section h4 {
