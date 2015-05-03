@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="markii",
-    version="0.2.1",
+    version="0.2.2",
     description="MarkII is an improved development-mode error handler for Python web applications.",
     long_description=long_description,
     packages=["markii", "markii.frameworks"],
