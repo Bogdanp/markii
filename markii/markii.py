@@ -55,7 +55,20 @@ def dict_to_kv(d):
     return {k: repr(v) for k, v in d.iteritems()}
 
 
-def markii(request, exception, app_root=None):
+def markii(exception, request=None, app_root=None):
+    """Inspects the current exception and generates a static HTML dump
+    with its frame information.
+
+    :param Exception exception:
+      The exception to inspect.
+    :param dict request:
+      A dict containing information about the request.
+    :param str app_root:
+      The app's root path. This is used to determine which frames
+      belong to the app and which don't.
+    :returns:
+      The generated HTML as a str.
+    """
     _, __, traceback = sys.exc_info()
     error = exception.__class__.__name__
     message = str(exception)

@@ -74,10 +74,12 @@
                 </div>
             {% endfor %}
 
-            <div class="section">
-                <h4>Request</h4>
-                {{ dict_to_table(request) }}
-            </div>
+            {% if request %}
+                <div class="section">
+                    <h4>Request</h4>
+                    {{ dict_to_table(request) }}
+                </div>
+            {% endif %}
 
             {% if process %}
                 <div class="section">

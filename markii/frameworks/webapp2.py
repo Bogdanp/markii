@@ -3,8 +3,8 @@ from markii import markii
 from collections import OrderedDict
 
 
-def handle_error(request, response, exception, code=500):
-    request = OrderedDict((
+def handle_error(request, response, exception, code=500, app_root=None):
+    response.write(markii(exception, request=OrderedDict((
         ("url", request.url),
         ("query_string", request.query_string),
         ("method", request.method),
@@ -12,6 +12,5 @@ def handle_error(request, response, exception, code=500):
         ("headers", request.headers),
         ("params", request.params or {}),
         ("body", request.body),
-    ))
-    response.write(markii(request, exception))
+    )), app_root=app_root))
     response.set_status(code)
