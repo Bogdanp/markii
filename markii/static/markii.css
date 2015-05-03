@@ -1,0 +1,115 @@
+/*** This borrows a lot of stuff from `better_errors`. */
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: #F0F0F5;
+    font: 62.5%/1.4 Helvetica, Arial, sans-serif;
+    color: black;
+}
+
+div#body {
+    font-size: 1.6em;
+}
+
+div#exception {
+    background: #20202A;
+    padding: 1em;
+    color: white;
+}
+
+div#exception h2 {
+    margin: 0;
+    color: white;
+    font-weight: normal;
+}
+
+div#exception h5 {
+    color: #DF5452;
+}
+
+div#lhs,
+div#rhs {
+    width: 40%;
+    float: left;
+}
+
+div#rhs {
+    width: 60%;
+}
+
+ul#frames {
+    background: white;
+    border-radius: 5px;
+    border-right: 1px solid #E2E2E2;
+    border-bottom: 1px solid #E2E2E2;
+    list-style-type: none;
+    margin: 1em;
+}
+
+ul#frames li {
+    cursor: pointer;
+    padding: 1em;
+    border-top: 1px solid #E2E2E2;
+}
+
+ul#frames li:first-child {
+    border-top: 0;
+}
+
+ul#frames li h4 {
+    font-family: monospace;
+    color: #333;
+}
+
+ul#frames li h6 {
+    font-weight: normal;
+    color: #999;
+}
+
+ul#frames li.current h4 {
+    color: #AC322F;
+}
+
+div#rhs div.frame {
+    display: none;
+}
+
+div#rhs div.section {
+    margin: 1em 1em 1em 0;
+    overflow: scroll;
+}
+
+div#rhs div.section div.source {
+    background: white;
+    border-radius: 5px;
+    border-right: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+    padding: 1em;
+}
+
+div#rhs div.section h4 {
+    margin: 0.2em 0 0.5em 0;
+    text-shadow: 0 1px 1px #FFF;
+    color: #2C99AB;
+}
+
+div#rhs div.section table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8em;
+}
+
+div#rhs div.section table td:first-child {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+div#rhs div.section table td {
+    border-top: 1px solid #DDD;
+    padding: 3px 0;
+}
