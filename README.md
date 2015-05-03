@@ -39,6 +39,11 @@ httpserver.serve(app, host="127.0.0.1", port="8080")
 
 Make sure you only use MarkII in development mode.
 
+## Gotchas
+
+On AppEngine, you must call `markii.appengine.fix_appengine()` inside
+your error handler.
+
 ## Acknowledgements
 
 MarkII borrows its ideas (and most of its look) from [better_errors](https://github.com/charliesome/better_errors).

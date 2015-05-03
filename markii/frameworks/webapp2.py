@@ -1,11 +1,9 @@
 from markii import markii
-from markii.appengine import fix_appengine
 
 from collections import OrderedDict
 
 
 def handle_error(request, response, exception, code=500):
-    fix_appengine()
     request = OrderedDict((
         ("url", request.url),
         ("query_string", request.query_string),
