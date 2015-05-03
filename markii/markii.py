@@ -55,25 +55,10 @@ def dict_to_kv(d):
     return {k: repr(v) for k, v in d.iteritems()}
 
 
-def build_response(request, frames, exception, process):
+def markii(request, exception, app_root=None):
+    _, __, traceback = sys.exc_info()
     error = exception.__class__.__name__
     message = str(exception)
-
-    return TEMPLATE.render(
-        style=STYLE,
-        script=SCRIPT,
-        error=error,
-        message=message,
-        frames=frames,
-        request=request,
-        process=process,
-        hasattr=hasattr,
-        ismethod=inspect.ismethod
-    )
-
-
-def markii(request, exception):
-    _, __, traceback = sys.exc_info()
     items = inspect.getinnerframes(traceback)
     frames = []
     try:
@@ -114,7 +99,17 @@ def markii(request, exception):
                 ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
             ))
 
-        return build_response(request, frames, exception, process)
+        return TEMPLATE.render(
+            style=STYLE,
+            script=SCRIPT,
+            error=error,
+            message=message,
+            frames=frames,
+            request=request,
+            process=process,
+            hasattr=hasattr,
+            ismethod=inspect.ismethod
+        )
     finally:
         del frames
         del items
