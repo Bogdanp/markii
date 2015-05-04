@@ -35,6 +35,18 @@ def getrusage():
         return None
 
 
+def getprocinfo():
+    rusage = getrusage()
+    if rusage is None:
+        return None
+
+    return OrderedDict((
+        ("utime", str(rusage.ru_utime)),
+        ("stime", str(rusage.ru_stime)),
+        ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
+    ))
+
+
 def deindent(source):
     if source.startswith(" "):
         lines = source.split("\n")
@@ -110,15 +122,7 @@ def markii(exception, request=None, app_root=""):
                 del item
 
         frames = frames[::-1]
-        rusage = getrusage()
-        process = None
-        if rusage is not None:
-            process = OrderedDict((
-                ("utime", str(rusage.ru_utime)),
-                ("stime", str(rusage.ru_stime)),
-                ("mem", "{0:.2f}MB".format(float(rusage.ru_maxrss) / 1024 / 1024)),
-            ))
-
+        process = getprocinfo()
         return TEMPLATE.render(
             style=STYLE,
             script=SCRIPT,
