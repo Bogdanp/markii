@@ -2,13 +2,19 @@ import inspect
 import os
 import sys
 
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from jinja2 import Environment, FileSystemLoader
 
 try:
     import resource
 except ImportError:
     resource = None
+
+
+Frame = namedtuple("Frame", [
+    "func", "func_locals", "instance_class", "instance_locals",
+    "filename", "source", "line", "lines", "app_local"
+])
 
 
 def rel(*xs):
@@ -23,6 +29,19 @@ SCRIPT = static("markii.js")
 JINJA_LOADER = FileSystemLoader(rel("static"))
 JINJA = Environment(loader=JINJA_LOADER)
 TEMPLATE = JINJA.get_template("template.html")
+
+
+def deindent(source):
+    if source.startswith(" "):
+        lines = source.split("\n")
+        level = len(filter(lambda s: not s, lines[0].split(" ")))
+        return "\n".join(line[level:] for line in lines)
+
+    return source
+
+
+def dict_to_kv(d):
+    return {k: repr(v) for k, v in d.iteritems()}
 
 
 def getrusage():
@@ -47,15 +66,6 @@ def getprocinfo():
     ))
 
 
-def deindent(source):
-    if source.startswith(" "):
-        lines = source.split("\n")
-        level = len(filter(lambda s: not s, lines[0].split(" ")))
-        return "\n".join(line[level:] for line in lines)
-
-    return source
-
-
 def getsource(ob):
     try:
         return deindent(inspect.getsource(ob))
@@ -63,27 +73,8 @@ def getsource(ob):
         return None
 
 
-def dict_to_kv(d):
-    return {k: repr(v) for k, v in d.iteritems()}
-
-
-def markii(exception, request=None, app_root=""):
-    """Inspects the current exception and generates a static HTML dump
-    with its frame information.
-
-    :param Exception exception:
-      The exception being inspected.
-    :param dict request:
-      A dict containing information about the request.
-    :param str app_root:
-      The app's root path. This is used to determine which frames
-      belong to the app and which don't.
-    :returns:
-      The generated HTML as a str.
-    """
+def getframes(app_root=""):
     _, __, traceback = sys.exc_info()
-    error = exception.__class__.__name__
-    message = str(exception)
     items = inspect.getinnerframes(traceback)
     frames = []
     try:
@@ -112,7 +103,7 @@ def markii(exception, request=None, app_root=""):
                     if inspect.isclass(clazz):
                         instance_class = clazz.__name__
 
-                frames.append((
+                frames.append(Frame(
                     func, func_locals, instance_class, instance_locals,
                     filename, source, line, lines, app_local
                 ))
@@ -121,20 +112,39 @@ def markii(exception, request=None, app_root=""):
                 del frame
                 del item
 
-        frames = frames[::-1]
-        process = getprocinfo()
-        return TEMPLATE.render(
-            style=STYLE,
-            script=SCRIPT,
-            error=error,
-            message=message,
-            frames=frames,
-            request=request,
-            process=process,
-            hasattr=hasattr,
-            ismethod=inspect.ismethod
-        )
+        return frames[::-1]
     finally:
         del frames
         del items
         del traceback
+
+
+def markii(exception, request=None, app_root=""):
+    """Inspects the current exception and generates a static HTML dump
+    with its frame information.
+
+    :param Exception exception:
+      The exception being inspected.
+    :param dict request:
+      A dict containing information about the request.
+    :param str app_root:
+      The app's root path. This is used to determine which frames
+      belong to the app and which don't.
+    :returns:
+      The generated HTML as a str.
+    """
+    error = exception.__class__.__name__
+    message = str(exception)
+    frames = getframes(app_root)
+    process = getprocinfo()
+    return TEMPLATE.render(
+        style=STYLE,
+        script=SCRIPT,
+        error=error,
+        message=message,
+        frames=frames,
+        request=request,
+        process=process,
+        hasattr=hasattr,
+        ismethod=inspect.ismethod
+    )
