@@ -31,17 +31,22 @@
 
         <div id="lhs">
             <ul id="frames">
-                {% for func, _, _, filename, _, line, _ in frames %}
-                    <li class="func" data-frame="{{ loop.index }}">
+                {% for func, _, _, filename, _, line, _, app_local in frames %}
+                    <li class="func" data-frame="{{ loop.index }}" data-app-local="{{ app_local }}">
                         <h4>{{ func }}()</h4>
                         <h6>in {{ filename }}, line <strong>{{ line }}</strong></h6>
                     </li>
                 {% endfor %}
             </ul>
+
+            <div id="toggle">
+                <input type="checkbox" id="app-local-toggle" />
+                <label for="app-local-toggle">App frames only</label>
+            </div>
         </div>
 
         <div id="rhs">
-            {% for func, func_locals, instance_locals, filename, source, line, lines in frames %}
+            {% for func, func_locals, instance_locals, filename, source, line, lines, _ in frames %}
                 <div class="frame" data-frame="{{ loop.index }}">
                     {% if source %}
                         <div class="section">

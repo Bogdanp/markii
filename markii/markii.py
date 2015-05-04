@@ -55,12 +55,12 @@ def dict_to_kv(d):
     return {k: repr(v) for k, v in d.iteritems()}
 
 
-def markii(exception, request=None, app_root=None):
+def markii(exception, request=None, app_root=""):
     """Inspects the current exception and generates a static HTML dump
     with its frame information.
 
     :param Exception exception:
-      The exception to inspect.
+      The exception being inspected.
     :param dict request:
       A dict containing information about the request.
     :param str app_root:
@@ -77,6 +77,7 @@ def markii(exception, request=None, app_root=None):
     try:
         for item in items:
             frame, filename, line, func, lines, index = item
+            app_local = filename.startswith(app_root)
             f_locals = frame.f_locals
             try:
                 lines = [l.strip() for l in lines]
@@ -95,7 +96,7 @@ def markii(exception, request=None, app_root=None):
 
                 frames.append((
                     func, func_locals, instance_locals,
-                    filename, source, line, lines
+                    filename, source, line, lines, app_local
                 ))
             finally:
                 del f_locals

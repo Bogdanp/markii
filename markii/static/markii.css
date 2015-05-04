@@ -37,6 +37,13 @@ div#rhs {
     float: left;
 }
 
+div#lhs div#toggle {
+    margin-left: 1.5em;
+    font-family: monospace;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
 div#rhs {
     width: 60%;
 }
