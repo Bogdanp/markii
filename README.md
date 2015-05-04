@@ -44,6 +44,16 @@ Make sure you only use MarkII in development mode.
 On AppEngine, you must call `markii.appengine.fix_appengine()` inside
 your error handler.
 
+## Text editor support
+
+MarkII supports opening files in your editor on OS X by taking
+advantage of OS X's URL handler feature. See:
+
+- [Emacs](https://github.com/typester/emacs-handler)
+- [MacVim](https://code.google.com/p/macvim/issues/detail?id=105)
+- [Sublime Text](https://github.com/typester/emacs-handler)
+
+
 ## Acknowledgements
 
 MarkII borrows its ideas (and most of its look) from [better_errors](https://github.com/charliesome/better_errors).

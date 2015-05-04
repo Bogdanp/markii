@@ -1,5 +1,3 @@
-/*** This borrows a lot of stuff from `better_errors`. */
-
 * {
     padding: 0;
     margin: 0;
@@ -44,6 +42,11 @@ div#lhs div#toggle {
     text-transform: uppercase;
 }
 
+div#lhs select#editor {
+    float: right;
+    margin-right: 1.8em;
+}
+
 div#rhs {
     width: 60%;
 }
@@ -61,6 +64,13 @@ ul#frames li {
     cursor: pointer;
     padding: 1em;
     border-top: 1px solid #E2E2E2;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 ul#frames li:first-child {

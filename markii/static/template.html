@@ -32,7 +32,11 @@
         <div id="lhs">
             <ul id="frames">
                 {% for func, _, instance_class, _, filename, _, line, _, app_local in frames %}
-                    <li class="func" data-frame="{{ loop.index }}" data-app-local="{{ app_local }}">
+                    <li class="func"
+                        data-frame="{{ loop.index }}"
+                        data-app-local="{{ app_local }}"
+                        data-filename="{{ filename }}"
+                        data-line="{{ line }}">
                         <h4>
                             {% if instance_class %}
                                 {{ instance_class }}.{{ func }}
@@ -44,6 +48,12 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            <select id="editor">
+                <option value="emacs">Emacs</option>
+                <option value="mvim">MacVim</option>
+                <option value="subl">Sublime Text</option>
+            </select>
 
             <div id="toggle">
                 <input type="checkbox" id="app-local-toggle" />
