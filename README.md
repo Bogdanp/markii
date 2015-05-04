@@ -4,7 +4,7 @@ MarkII is a development-mode error handler for Python web applications.
 
 ## Installation
 
-`$ pip install markii`
+`pip install markii`
 
 ## Usage
 
