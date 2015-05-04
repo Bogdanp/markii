@@ -84,18 +84,24 @@ def markii(exception, request=None, app_root=""):
                 source = getsource(frame).strip().split("\n")
                 source = [(l.strip() in lines, l) for l in source]
                 func_locals = dict_to_kv(frame.f_locals)
+                instance_class = None
                 instance_locals = None
                 if "self" in func_locals:
                     instance = f_locals.get("self")
+                    instance_class = instance.__class__.__name__
                     instance_vars = vars(instance)
                     try:
                         instance_locals = dict_to_kv(instance_vars)
                     finally:
                         del instance_vars
                         del instance
+                elif "cls" in func_locals:
+                    clazz = f_locals.get("cls")
+                    if inspect.isclass(clazz):
+                        instance_class = clazz.__name__
 
                 frames.append((
-                    func, func_locals, instance_locals,
+                    func, func_locals, instance_class, instance_locals,
                     filename, source, line, lines, app_local
                 ))
             finally:

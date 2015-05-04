@@ -31,9 +31,15 @@
 
         <div id="lhs">
             <ul id="frames">
-                {% for func, _, _, filename, _, line, _, app_local in frames %}
+                {% for func, _, instance_class, _, filename, _, line, _, app_local in frames %}
                     <li class="func" data-frame="{{ loop.index }}" data-app-local="{{ app_local }}">
-                        <h4>{{ func }}()</h4>
+                        <h4>
+                            {% if instance_class %}
+                                {{ instance_class }}.{{ func }}
+                            {% else %}
+                                {{ func }}
+                            {% endif %}
+                        </h4>
                         <h6>in {{ filename }}, line <strong>{{ line }}</strong></h6>
                     </li>
                 {% endfor %}
@@ -46,7 +52,7 @@
         </div>
 
         <div id="rhs">
-            {% for func, func_locals, instance_locals, filename, source, line, lines, _ in frames %}
+            {% for func, func_locals, _, instance_locals, filename, source, line, lines, _ in frames %}
                 <div class="frame" data-frame="{{ loop.index }}">
                     {% if source %}
                         <div class="section">
