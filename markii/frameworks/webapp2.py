@@ -3,7 +3,7 @@ from markii import markii
 from collections import OrderedDict
 
 
-def handle_error(request, response, exception, code=500, app_root=None):
+def handle_error(request, response, exception, code=500, app_root=""):
     response.write(markii(exception, request=OrderedDict((
         ("url", request.url),
         ("query_string", request.query_string),
