@@ -1,7 +1,6 @@
 # markii
 
-MarkII is an improved development-mode error handler for Python web
-applications. Currently the only supported framework is `webapp2`.
+MarkII is a development-mode error handler for Python web applications.
 
 ## Installation
 
@@ -46,8 +45,8 @@ your error handler.
 
 ## Text editor support
 
-MarkII supports opening files in your editor on OS X by taking
-advantage of OS X's URL handler feature. See:
+MarkII supports opening files in your editor when you double click a
+frame by taking advantage of OSX's URL handler feature. See:
 
 - [Emacs](https://github.com/typester/emacs-handler)
 - [MacVim](https://code.google.com/p/macvim/issues/detail?id=105)
