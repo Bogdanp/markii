@@ -70,7 +70,7 @@ def getsource(ob):
     try:
         return deindent(inspect.getsource(ob))
     except Exception:
-        return None
+        return ""
 
 
 def getframes(app_root=""):
