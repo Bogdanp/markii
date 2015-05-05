@@ -69,7 +69,7 @@ def getprocinfo():
 def getsource(ob):
     try:
         return deindent(inspect.getsource(ob))
-    except IOError:
+    except Exception:
         return None
 
 
