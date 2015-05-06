@@ -1,13 +1,12 @@
-from setuptools import setup
+import pypandoc
 
-with open("README.md") as f:
-    long_description = f.read()
+from setuptools import setup
 
 setup(
     name="markii",
-    version="0.3.0",
+    version="0.3.1",
     description="MarkII is a development-mode error handler for Python web applications.",
-    long_description=long_description,
+    long_description=pypandoc.convert("README.md", "rst"),
     packages=["markii", "markii.frameworks"],
     install_requires=["jinja2"],
     include_package_data=True,
