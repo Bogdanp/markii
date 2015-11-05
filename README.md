@@ -3,6 +3,7 @@
 MarkII is a development-mode error handler for Python web applications.
 
 [![Build Status](https://travis-ci.org/Bogdanp/markii.svg?branch=master)](https://travis-ci.org/Bogdanp/markii)
+[![Coverage Status](https://coveralls.io/repos/Bogdanp/markii/badge.svg?branch=master)](https://coveralls.io/r/Bogdanp/markii?branch=master)
 
 ## Installation
 
