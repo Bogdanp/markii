@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 
 try:
     import resource
-except ImportError:
+except ImportError:  # pragma: no cover
     resource = None
 
 
@@ -50,7 +50,7 @@ def getrusage():
 
     try:
         return resource.getrusage(resource.RUSAGE_SELF)
-    except:
+    except (ValueError, resource.error):  # pragma: no cover
         return None
 
 
@@ -69,7 +69,7 @@ def getprocinfo():
 def getsource(ob):
     try:
         return deindent(inspect.getsource(ob))
-    except Exception:
+    except TypeError:
         return ""
 
 
