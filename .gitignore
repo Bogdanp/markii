@@ -1,4 +1,5 @@
+*.pyc
+/.cache
 /build/
 /dist/
 /markii.egg-info/
-*.pyc

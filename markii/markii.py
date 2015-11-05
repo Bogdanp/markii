@@ -92,12 +92,14 @@ def getframes(app_root=""):
                 if "self" in func_locals:
                     instance = f_locals.get("self")
                     instance_class = instance.__class__.__name__
-                    instance_vars = vars(instance)
+                    instance_vars = vars(instance) if instance is not None else {}
+
                     try:
                         instance_locals = dict_to_kv(instance_vars)
                     finally:
                         del instance_vars
                         del instance
+
                 elif "cls" in func_locals:
                     clazz = f_locals.get("cls")
                     if inspect.isclass(clazz):

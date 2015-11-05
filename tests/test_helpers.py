@@ -71,3 +71,46 @@ def test_getframes():
         assert frames[1].func == "g"
         assert frames[2].func == "h"
         assert frames[3].func == "test_getframes"
+
+
+def test_getframes_class_instance():
+    from markii.markii import getframes
+
+    class Foo(object):
+        def f(self):
+            raise Exception()
+
+        def g(self):
+            return self.f()
+
+    try:
+        Foo().g()
+    except:
+        frames = getframes()
+        assert frames
+        assert len(frames) == 3
+        assert frames[0].func == "f"
+        assert frames[1].func == "g"
+        assert frames[2].func == "test_getframes_class_instance"
+
+
+def test_getframes_class_instance_gcd():
+    from markii.markii import getframes
+
+    class Foo(object):
+        def f(self):
+            self = None  # noqa
+            raise Exception()
+
+        def g(self):
+            return self.f()
+
+    try:
+        Foo().g()
+    except:
+        frames = getframes()
+        assert frames
+        assert len(frames) == 3
+        assert frames[0].func == "f"
+        assert frames[1].func == "g"
+        assert frames[2].func == "test_getframes_class_instance_gcd"
