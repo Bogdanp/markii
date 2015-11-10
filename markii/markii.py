@@ -92,7 +92,10 @@ def getframes(app_root=""):
                 if "self" in func_locals:
                     instance = f_locals.get("self")
                     instance_class = instance.__class__.__name__
-                    instance_vars = vars(instance) if instance is not None else {}
+                    instance_vars = {}
+
+                    if hasattr(instance, "__dict__"):
+                        instance_vars = vars(instance)
 
                     try:
                         instance_locals = dict_to_kv(instance_vars)
