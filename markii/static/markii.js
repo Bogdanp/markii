@@ -3,6 +3,7 @@ $(function() {
     var $funcs = $("ul#frames li.func");
     var $toggle = $("input#app-local-toggle");
     var $editor = $("select#editor");
+    var $sourceBlocks = $("div.source");
     var storageKey = "markii-config";
     var config = JSON.parse(localStorage.getItem(storageKey) || "{}");
 
@@ -54,4 +55,8 @@ $(function() {
     }
 
     $("ul#frames li.func:first-child").trigger("click");
+
+    $sourceBlocks.each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
 });
