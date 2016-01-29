@@ -1,7 +1,8 @@
 falcon
 webapp2
-
+webob
 paste
+
 pytest
 pytest-cov
 -r requirements.txt
