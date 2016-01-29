@@ -1,6 +1,6 @@
-from markii import markii
-
 from collections import OrderedDict
+
+from .. import markii
 
 
 def handle_error(request, response, exception, code=500, app_root=""):

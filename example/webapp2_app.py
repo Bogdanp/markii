@@ -18,4 +18,6 @@ app = webapp2.WSGIApplication([
 app.error_handlers[400] = partial(handle_error, code=400, app_root=root)
 app.error_handlers[404] = partial(handle_error, code=404, app_root=root)
 app.error_handlers[500] = partial(handle_error, code=500, app_root=root)
-httpserver.serve(app, host="127.0.0.1", port="8080")
+
+if __name__ == "__main__":
+    httpserver.serve(app, host="127.0.0.1", port="8080")

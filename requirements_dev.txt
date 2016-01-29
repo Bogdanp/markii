@@ -1,3 +1,7 @@
+falcon
+webapp2
+
+paste
 pytest
 pytest-cov
 -r requirements.txt
