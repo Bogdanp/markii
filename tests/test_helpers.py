@@ -1,10 +1,19 @@
+# coding=utf-8
 import bootstrap  # noqa
 import inspect
 
+from markii import markii
+from markii.markii import (
+    deindent,
+    getframes,
+    getprocinfo,
+    getrusage,
+    getsource,
+    resource
+)
+
 
 def test_getrusage():
-    from markii.markii import getrusage
-
     try:
         import resource  # noqa
         assert getrusage()
@@ -13,8 +22,6 @@ def test_getrusage():
 
 
 def test_getsource():
-    from markii.markii import getsource
-
     def f():
         return 42
 
@@ -25,8 +32,6 @@ def f():
 
 
 def test_getprocinfo_no_resource():
-    from markii.markii import getprocinfo
-
     assert getprocinfo()
 
     module = inspect.getmodule(getprocinfo)
@@ -37,13 +42,10 @@ def test_getprocinfo_no_resource():
 
 
 def test_getsource_builtin():
-    from markii.markii import getsource
     assert getsource(list) == ""
 
 
 def test_getprocinfo():
-    from markii.markii import resource, getprocinfo
-
     process = getprocinfo()
     if not resource:
         assert process is None
@@ -58,7 +60,6 @@ def test_getprocinfo():
 
 
 def test_deident():
-    from markii.markii import deindent
     source = """\
     def foo():
         return 42
@@ -71,7 +72,6 @@ def foo():
 
 
 def test_deident_unindented():
-    from markii.markii import deindent
     source = """\
 def foo():
     return 42
@@ -80,8 +80,6 @@ def foo():
 
 
 def test_getframes():
-    from markii.markii import getframes
-
     def f():
         raise Exception()
 
@@ -104,8 +102,6 @@ def test_getframes():
 
 
 def test_getframes_class_instance():
-    from markii.markii import getframes
-
     class Foo(object):
         @classmethod
         def fm(cls):
@@ -142,8 +138,6 @@ def test_getframes_class_instance():
 
 
 def test_getframes_class_instance_gcd():
-    from markii.markii import getframes
-
     class Foo(object):
         def f(self):
             self = None  # noqa
@@ -164,10 +158,18 @@ def test_getframes_class_instance_gcd():
 
 
 def test_rendering():
-    from markii import markii
-
     def f(self):
-        raise Exception()
+        raise Exception("an error")
+
+    try:
+        f()
+    except Exception as e:
+        assert markii(e)
+
+
+def test_rendering_unicode():
+    def f(self):
+        raise Exception(u"Ω≈ç√∫˜µ≤≥÷")
 
     try:
         f()

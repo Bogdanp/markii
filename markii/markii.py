@@ -68,8 +68,8 @@ def getprocinfo():
 
 def getsource(ob):
     try:
-        return deindent(inspect.getsource(ob))
-    except TypeError:
+        return deindent(inspect.getsource(ob)).decode("utf-8")
+    except (TypeError, UnicodeDecodeError):
         return ""
 
 
