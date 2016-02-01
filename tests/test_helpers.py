@@ -27,8 +27,7 @@ def test_getsource():
 
     assert getsource(f) == """\
 def f():
-    return 42
-"""
+    return 42""".split("\n")
 
 
 def test_getprocinfo_no_resource():
@@ -158,7 +157,7 @@ def test_getframes_class_instance_gcd():
 
 
 def test_rendering():
-    def f(self):
+    def f():
         raise Exception("an error")
 
     try:
@@ -168,7 +167,7 @@ def test_rendering():
 
 
 def test_rendering_unicode():
-    def f(self):
+    def f():
         raise Exception(u"Ω≈ç√∫˜µ≤≥÷")
 
     try:

@@ -68,24 +68,27 @@ def getprocinfo():
 
 def getsource(ob):
     try:
-        return deindent(inspect.getsource(ob)).decode("utf-8")
+        source = deindent(inspect.getsource(ob))
+        if isinstance(source, str):
+            source = source.decode("utf-8")
+
+        return source.strip().split("\n")
     except (TypeError, UnicodeDecodeError):
         return ""
 
 
 def getframes(app_root=""):
-    _, __, traceback = sys.exc_info()
+    _, _, traceback = sys.exc_info()
     items = inspect.getinnerframes(traceback)
     frames = []
     try:
         for item in items:
-            frame, filename, line, func, lines, index = item
+            frame, filename, line, func, lines, _ = item
             app_local = filename.startswith(app_root)
             f_locals = frame.f_locals
             try:
-                lines = [l.strip() for l in lines]
-                source = getsource(frame).strip().split("\n")
-                source = [(l.strip() in lines, l) for l in source]
+                lines = [l.decode("utf-8").strip() for l in lines]
+                source = ((l.strip() in lines, l) for l in getsource(frame))
                 func_locals = dict_to_kv(frame.f_locals)
                 instance_class = None
                 instance_locals = None
@@ -139,7 +142,7 @@ def markii(exception, request=None, app_root=""):
       The generated HTML as a str.
     """
     error = exception.__class__.__name__
-    message = str(exception)
+    message = unicode(exception)
     frames = getframes(app_root)
     process = getprocinfo()
     return TEMPLATE.render(
