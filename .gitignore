@@ -2,6 +2,7 @@
 /.cache
 /.coverage
 /build/
+/coverage.xml
 /dist/
 /htmlcov
 /markii.egg-info/

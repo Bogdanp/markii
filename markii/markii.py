@@ -33,8 +33,9 @@ TEMPLATE = JINJA.get_template("template.html")
 
 def deindent(source):
     if source.startswith(" "):
-        lines = source.split("\n")
-        level = len(filter(lambda s: not s, lines[0].split(" ")))
+        lines = source.split("\n")  # ["  pass", ...]
+        chars = lines[0].split(" ")  # ["", "", "pass"]
+        level = sum(not c for c in chars)  # 2
         return "\n".join(line[level:] for line in lines)
 
     return source

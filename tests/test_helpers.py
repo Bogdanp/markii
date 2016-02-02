@@ -104,20 +104,20 @@ def test_getframes_class_instance():
     class Foo(object):
         @classmethod
         def fm(cls):
-            raise Exception()
+            cls.idontexist()
 
         def gm(self):
             return self.fm()
 
         def f(self):
-            raise Exception()
+            self.idontexist()
 
         def g(self):
             return self.f()
 
     try:
         Foo().g()
-    except:
+    except AttributeError:
         frames = getframes()
         assert frames
         assert len(frames) == 3
@@ -127,7 +127,7 @@ def test_getframes_class_instance():
 
     try:
         Foo().gm()
-    except:
+    except AttributeError:
         frames = getframes()
         assert frames
         assert len(frames) == 3
