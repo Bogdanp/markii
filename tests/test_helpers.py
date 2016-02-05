@@ -91,7 +91,7 @@ def test_getframes():
 
     try:
         h()
-    except:
+    except Exception:
         frames = getframes()
         assert frames
         assert len(frames) == 4
