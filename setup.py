@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="markii",
-    version="0.3.9",
+    version="0.4.0",
     description="MarkII is a development-mode error handler for Python web applications.",
     long_description="https://github.com/Bogdanp/markii",
     packages=["markii", "markii.frameworks"],
@@ -13,7 +13,9 @@ setup(
     url="https://github.com/Bogdanp/markii",
     keywords=["web", "errors", "debugging"],
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
+        "Topic :: Software Development :: Debuggers"
     ]
 )
