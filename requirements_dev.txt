@@ -5,4 +5,5 @@ paste
 
 pytest
 pytest-cov
+tox
 -r requirements.txt

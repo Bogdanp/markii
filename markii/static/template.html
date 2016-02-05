@@ -1,10 +1,10 @@
 {% macro dict_to_table(d) %}
     <table>
-        {% for name, value in d.iteritems() %}
+        {% for name, value in d.items() %}
             {% if name %}
                 <tr>
                     <td><strong><pre>{{ name|e }}</pre></strong></td>
-                    {% if value and hasattr(value, "iteritems") and ismethod(value.iteritems) %}
+                    {% if value and hasattr(value, "items") and ismethod(value.items) %}
                         <td>{{ dict_to_table(value) }}</td>
                     {% else %}
                         <td><pre>{{ value|e }}</pre></td>

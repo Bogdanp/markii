@@ -1,6 +1,7 @@
 # coding=utf-8
 import bootstrap  # noqa
 import inspect
+import six
 
 from markii import markii
 from markii.markii import (
@@ -53,9 +54,9 @@ def test_getprocinfo():
     assert "stime" in process
     assert "mem" in process
 
-    assert isinstance(process.get("utime"), basestring)
-    assert isinstance(process.get("stime"), basestring)
-    assert isinstance(process.get("mem"), basestring)
+    assert isinstance(process.get("utime"), six.string_types)
+    assert isinstance(process.get("stime"), six.string_types)
+    assert isinstance(process.get("mem"), six.string_types)
 
 
 def test_deident():

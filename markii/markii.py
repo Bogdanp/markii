@@ -1,5 +1,6 @@
 import inspect
 import os
+import six
 import sys
 
 from collections import OrderedDict, namedtuple
@@ -42,7 +43,7 @@ def deindent(source):
 
 
 def dict_to_kv(d):
-    return {k: repr(v) for k, v in d.iteritems()}
+    return {k: repr(v) for k, v in six.iteritems(d)}
 
 
 def getrusage():
@@ -70,7 +71,7 @@ def getprocinfo():
 def getsource(ob):
     try:
         source = deindent(inspect.getsource(ob))
-        if isinstance(source, str):
+        if isinstance(source, six.binary_type):
             source = source.decode("utf-8")
 
         return source.strip().split("\n")
@@ -88,7 +89,7 @@ def getframes(app_root=""):
             app_local = filename.startswith(app_root)
             f_locals = frame.f_locals
             try:
-                lines = [l.decode("utf-8").strip() for l in lines]
+                lines = [l.strip() for l in lines]
                 source = ((l.strip() in lines, l) for l in getsource(frame))
                 func_locals = dict_to_kv(frame.f_locals)
                 instance_class = None
@@ -143,7 +144,7 @@ def markii(exception, request=None, app_root=""):
       The generated HTML as a str.
     """
     error = exception.__class__.__name__
-    message = unicode(exception)
+    message = six.text_type(exception)
     frames = getframes(app_root)
     process = getprocinfo()
     return TEMPLATE.render(
