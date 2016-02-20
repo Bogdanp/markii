@@ -1,6 +1,7 @@
 # coding=utf-8
 import bootstrap  # noqa
 import inspect
+import jinja2
 import six
 
 from markii import markii
@@ -170,6 +171,27 @@ def test_rendering():
 def test_rendering_unicode():
     def f():
         raise Exception(u"Ω≈ç√∫˜µ≤≥÷")
+
+    try:
+        f()
+    except Exception as e:
+        assert markii(e)
+
+
+def test_rendering_errors_in_jinja():
+    def f():
+        jinja2.Template("{{a.b}}").render()
+
+    try:
+        f()
+    except Exception as e:
+        assert markii(e)
+
+
+def test_rendering_errors_in_jinja_from_disk():
+    def f():
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader("tests/fixtures"))
+        env.get_template("exception.html").render()
 
     try:
         f()

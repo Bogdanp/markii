@@ -75,7 +75,7 @@ def getsource(ob):
             source = source.decode("utf-8")
 
         return source.strip().split("\n")
-    except (TypeError, UnicodeDecodeError):
+    except BaseException:
         return ""
 
 
@@ -89,7 +89,7 @@ def getframes(app_root=""):
             app_local = filename.startswith(app_root)
             f_locals = frame.f_locals
             try:
-                lines = [l.strip() for l in lines]
+                lines = [l.strip() for l in lines or []]
                 source = ((l.strip() in lines, l) for l in getsource(frame))
                 func_locals = dict_to_kv(frame.f_locals)
                 instance_class = None
