@@ -197,3 +197,13 @@ def test_rendering_errors_in_jinja_from_disk():
         f()
     except Exception as e:
         assert markii(e)
+
+
+def test_quoting():
+    def f():
+        jinja2.Template("{# unclosed comment").render()
+
+    try:
+        f()
+    except Exception as e:
+        assert "<unknown>" not in markii(e)

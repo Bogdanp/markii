@@ -3,11 +3,11 @@
         {% for name, value in d.items() %}
             {% if name %}
                 <tr>
-                    <td><strong><pre>{{ name|e }}</pre></strong></td>
+                    <td><strong><pre>{{ name }}</pre></strong></td>
                     {% if value and hasattr(value, "items") and ismethod(value.items) %}
                         <td>{{ dict_to_table(value) }}</td>
                     {% else %}
-                        <td><pre>{{ value|e }}</pre></td>
+                        <td><pre>{{ value }}</pre></td>
                     {% endif %}
                 </tr>
             {% endif %}
@@ -71,9 +71,9 @@
                             <div class="source">
                                 {% for relevant, line in source %}
                                     {% if relevant %}
-                                        <pre><strong>{{ line|e }}</pre></strong>
+                                        <pre><strong>{{ line }}</pre></strong>
                                     {% elif line %}
-                                        <pre>{{ line|e }}</pre>
+                                        <pre>{{ line }}</pre>
                                     {% else %}
                                         <br/>
                                     {% endif %}

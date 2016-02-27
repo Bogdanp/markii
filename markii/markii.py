@@ -28,7 +28,7 @@ def static(filename):
 STYLE = static("markii.css")
 SCRIPT = static("markii.js")
 JINJA_LOADER = FileSystemLoader(rel("static"))
-JINJA = Environment(loader=JINJA_LOADER)
+JINJA = Environment(loader=JINJA_LOADER, autoescape=True)
 TEMPLATE = JINJA.get_template("template.html")
 
 
