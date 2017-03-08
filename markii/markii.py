@@ -1,3 +1,4 @@
+import base64
 import inspect
 import os
 import six
@@ -25,6 +26,7 @@ def rel(*xs):
 def static(filename):
     return open(rel("static", filename)).read()
 
+
 STYLE = static("markii.css")
 SCRIPT = static("markii.js")
 JINJA_LOADER = FileSystemLoader(rel("static"))
@@ -44,6 +46,41 @@ def deindent(source):
 
 def dict_to_kv(d):
     return {k: repr(v) for k, v in six.iteritems(d)}
+
+
+_ascii_range = range(0, 128)
+
+
+def sanitize(d):
+    """Ensures that all values inside of the given dictionary are
+    represent valid ascii.  Child dictionaries are sanitized
+    recursively.
+
+    :param dict d:
+      The input dictionary.
+    :returns dict:
+      The sanitized dictionary.
+    """
+    if d is None:
+        return d
+
+    sanitized_d = {}
+    for key, value in six.iteritems(d):
+        if isinstance(value, dict):
+            sanitized_d[key] = sanitize(value)
+
+        elif isinstance(value, six.text_type):
+            sanitized_d[key] = value.encode("utf8", errors="replace")
+
+        else:
+            value = six.binary_type(value)
+
+            if not all(b in _ascii_range for b in value):
+                sanitized_d[key] = base64.b64encode(value)
+            else:
+                sanitized_d[key] = value
+
+    return sanitized_d
 
 
 def getrusage():
@@ -153,7 +190,7 @@ def markii(exception, request=None, app_root=""):
         error=error,
         message=message,
         frames=frames,
-        request=request,
+        request=sanitize(request),
         process=process,
         hasattr=hasattr,
         ismethod=inspect.ismethod

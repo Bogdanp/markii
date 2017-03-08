@@ -177,6 +177,18 @@ def test_rendering_unicode():
         assert markii(e)
 
 
+def test_rendering_binary_data_from_request():
+    assert "gA==" in markii(Exception("an error"), {"body": b"\x80"})
+
+
+def test_rendering_nested_binary_data_from_request():
+    assert "gA==" in markii(Exception("an error"), {"headers": {"user-agent": b"\x80"}})
+
+
+def test_rendering_nested_unicode_data_from_request():
+    assert markii(Exception("an error"), {"headers": {"user-agent": u"Ω≈ç√∫˜µ≤≥÷"}})
+
+
 def test_rendering_errors_in_jinja():
     def f():
         jinja2.Template("{{a.b}}").render()
