@@ -6,6 +6,9 @@ webapp2
 webob
 paste
 
+# Misc
+bumpversion
+
 # Testing
 pytest
 pytest-cov
