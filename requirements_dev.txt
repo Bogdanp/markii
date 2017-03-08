@@ -1,9 +1,12 @@
+-r requirements.txt
+
+# Optional deps
 falcon
 webapp2
 webob
 paste
 
+# Testing
 pytest
 pytest-cov
 tox
--r requirements.txt

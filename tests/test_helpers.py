@@ -1,5 +1,4 @@
 # coding=utf-8
-import bootstrap  # noqa
 import inspect
 import jinja2
 import six
