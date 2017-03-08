@@ -51,6 +51,12 @@ def dict_to_kv(d):
 _ascii_range = range(0, 128)
 
 
+def _b2i(b):
+    if isinstance(b, six.integer_types):
+        return b
+    return ord(b)
+
+
 def sanitize(d):
     """Ensures that all values inside of the given dictionary are
     represent valid ascii.  Child dictionaries are sanitized
@@ -75,7 +81,7 @@ def sanitize(d):
         else:
             value = six.binary_type(value)
 
-            if not all(b in _ascii_range for b in value):
+            if all(_b2i(b) not in _ascii_range for b in value):
                 sanitized_d[key] = base64.b64encode(value)
             else:
                 sanitized_d[key] = value

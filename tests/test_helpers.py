@@ -177,6 +177,11 @@ def test_rendering_unicode():
         assert markii(e)
 
 
+def test_rendering_normal_data_from_request():
+    assert "supercalifragilisticexpialidocious" in markii(
+        Exception("an error"), {"body": b"supercalifragilisticexpialidocious"})
+
+
 def test_rendering_binary_data_from_request():
     assert "gA==" in markii(Exception("an error"), {"body": b"\x80"})
 
