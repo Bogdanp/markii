@@ -81,7 +81,7 @@ def sanitize(d):
         else:
             value = six.binary_type(value)
 
-            if all(_b2i(b) not in _ascii_range for b in value):
+            if any(_b2i(b) not in _ascii_range for b in value):
                 sanitized_d[key] = base64.b64encode(value)
             else:
                 sanitized_d[key] = value
