@@ -187,7 +187,7 @@ def markii(exception, request=None, app_root=""):
       The generated HTML as a str.
     """
     error = exception.__class__.__name__
-    message = six.text_type(exception)
+    message = repr(exception)
     frames = getframes(app_root)
     process = getprocinfo()
     return TEMPLATE.render(

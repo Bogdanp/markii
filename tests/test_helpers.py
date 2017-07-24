@@ -177,6 +177,16 @@ def test_rendering_unicode():
         assert markii(e)
 
 
+def test_rendering_utf8():
+    def f():
+        raise Exception("Ω≈ç√∫˜µ≤≥÷")
+
+    try:
+        f()
+    except Exception as e:
+        assert markii(e)
+
+
 def test_rendering_normal_data_from_request():
     assert "supercalifragilisticexpialidocious" in markii(
         Exception("an error"), {"body": b"supercalifragilisticexpialidocious"})
